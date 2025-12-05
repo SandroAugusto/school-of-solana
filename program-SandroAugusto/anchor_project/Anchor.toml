@@ -1,0 +1,25 @@
+[toolchain]
+package_manager = "yarn"
+
+[features]
+resolution = true
+skip-lint = false
+
+[programs.localnet]
+prediction_market = "HQsBocFCGFxBK6rtHtWWpoooPGLugNUPtCps4aSwLrqt"
+
+[programs.devnet]
+prediction_market = "5m2w2PzCZkSPt8dcqFiuxrSNQX6Z8e84Etne95UPFTBT"
+
+[registry]
+url = "https://api.apr.dev"
+
+[provider]
+cluster = "devnet"
+wallet = "~/.config/solana/id.json"
+
+[build]
+rustflags = "-C opt-level=1"
+
+[scripts]
+test = "yarn test"

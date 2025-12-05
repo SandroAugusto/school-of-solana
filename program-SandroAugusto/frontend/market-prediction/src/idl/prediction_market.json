@@ -1,0 +1,352 @@
+{
+  "address": "5m2w2PzCZkSPt8dcqFiuxrSNQX6Z8e84Etne95UPFTBT",
+  "metadata": {
+    "name": "prediction_market",
+    "version": "0.1.0",
+    "spec": "0.1.0",
+    "description": "Created with Anchor"
+  },
+  "instructions": [
+    {
+      "name": "close_market",
+      "discriminator": [
+        88,
+        154,
+        248,
+        186,
+        48,
+        14,
+        123,
+        244
+      ],
+      "accounts": [
+        {
+          "name": "market",
+          "writable": true
+        },
+        {
+          "name": "signer",
+          "signer": true
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "initialize_market",
+      "discriminator": [
+        35,
+        35,
+        189,
+        193,
+        155,
+        48,
+        170,
+        203
+      ],
+      "accounts": [
+        {
+          "name": "market",
+          "writable": true
+        },
+        {
+          "name": "authority",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "question",
+          "type": "string"
+        },
+        {
+          "name": "end_time",
+          "type": "i64"
+        },
+        {
+          "name": "oracle",
+          "type": "pubkey"
+        },
+        {
+          "name": "is_curated",
+          "type": "bool"
+        }
+      ]
+    },
+    {
+      "name": "place_bet",
+      "discriminator": [
+        222,
+        62,
+        67,
+        220,
+        63,
+        166,
+        126,
+        33
+      ],
+      "accounts": [
+        {
+          "name": "market",
+          "writable": true
+        },
+        {
+          "name": "bet",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  98,
+                  101,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "market"
+              },
+              {
+                "kind": "account",
+                "path": "bettor"
+              }
+            ]
+          }
+        },
+        {
+          "name": "bettor",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "side",
+          "type": "u8"
+        },
+        {
+          "name": "amount",
+          "type": "u64"
+        }
+      ]
+    },
+    {
+      "name": "resolve_market",
+      "discriminator": [
+        155,
+        23,
+        80,
+        173,
+        46,
+        74,
+        23,
+        239
+      ],
+      "accounts": [
+        {
+          "name": "market",
+          "writable": true
+        },
+        {
+          "name": "oracle",
+          "signer": true,
+          "relations": [
+            "market"
+          ]
+        }
+      ],
+      "args": [
+        {
+          "name": "outcome",
+          "type": "u8"
+        }
+      ]
+    },
+    {
+      "name": "withdraw_winnings",
+      "discriminator": [
+        75,
+        180,
+        148,
+        117,
+        81,
+        100,
+        169,
+        50
+      ],
+      "accounts": [
+        {
+          "name": "market",
+          "writable": true,
+          "relations": [
+            "bet"
+          ]
+        },
+        {
+          "name": "bet",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  98,
+                  101,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "market"
+              },
+              {
+                "kind": "account",
+                "path": "bettor"
+              }
+            ]
+          }
+        },
+        {
+          "name": "bettor",
+          "signer": true,
+          "relations": [
+            "bet"
+          ]
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": []
+    }
+  ],
+  "accounts": [
+    {
+      "name": "Bet",
+      "discriminator": [
+        147,
+        23,
+        35,
+        59,
+        15,
+        75,
+        155,
+        32
+      ]
+    },
+    {
+      "name": "Market",
+      "discriminator": [
+        219,
+        190,
+        213,
+        55,
+        0,
+        227,
+        198,
+        154
+      ]
+    }
+  ],
+  "errors": [
+    {
+      "code": 6000,
+      "name": "MarketNotResolved",
+      "msg": "Market not resolved yet"
+    },
+    {
+      "code": 6001,
+      "name": "AlreadyWithdrawn",
+      "msg": "Already withdrawn"
+    },
+    {
+      "code": 6002,
+      "name": "NotAWinner",
+      "msg": "You did not win this market"
+    }
+  ],
+  "types": [
+    {
+      "name": "Bet",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "bettor",
+            "type": "pubkey"
+          },
+          {
+            "name": "market",
+            "type": "pubkey"
+          },
+          {
+            "name": "side",
+            "type": "u8"
+          },
+          {
+            "name": "amount",
+            "type": "u64"
+          },
+          {
+            "name": "withdrawn",
+            "type": "bool"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Market",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "authority",
+            "type": "pubkey"
+          },
+          {
+            "name": "oracle",
+            "type": "pubkey"
+          },
+          {
+            "name": "question",
+            "type": "string"
+          },
+          {
+            "name": "total_yes",
+            "type": "u64"
+          },
+          {
+            "name": "total_no",
+            "type": "u64"
+          },
+          {
+            "name": "outcome",
+            "type": "u8"
+          },
+          {
+            "name": "status",
+            "type": "u8"
+          },
+          {
+            "name": "end_time",
+            "type": "i64"
+          },
+          {
+            "name": "is_curated",
+            "type": "bool"
+          }
+        ]
+      }
+    }
+  ]
+}
